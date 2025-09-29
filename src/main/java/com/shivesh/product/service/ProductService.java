@@ -4,6 +4,7 @@ package com.shivesh.product.service;
 import com.shivesh.product.dto.ProductDTO;
 import com.shivesh.product.entity.Category;
 import com.shivesh.product.entity.Product;
+import com.shivesh.product.exception.CategoryNotFoundException;
 import com.shivesh.product.mapper.ProductMapper;
 import com.shivesh.product.repository.CategoryRepository;
 import com.shivesh.product.repository.ProductRepository;
@@ -22,7 +23,8 @@ public class ProductService {
     public ProductDTO createProduct(ProductDTO productDTO){
 
         Category category = categoryRepository.findById(productDTO.getCategoryId())
-                .orElseThrow(()-> new RuntimeException("Category Not Found!"));
+                .orElseThrow(()-> new CategoryNotFoundException("Category id "
+                        + productDTO.getCategoryId() + " Not Found!"));
 
         //DTO-> Entity
        Product product =  ProductMapper.toProductEntity(productDTO , category);
@@ -54,6 +56,8 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product Not Found"));
         Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category Not Found"));
+
+
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());

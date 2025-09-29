@@ -3,21 +3,30 @@ package com.shivesh.product.service;
 
 import com.shivesh.product.dto.CategoryDTO;
 import com.shivesh.product.entity.Category;
+import com.shivesh.product.exception.CategoryAlreadyExistsException;
 import com.shivesh.product.mapper.CategoryMapper;
 import com.shivesh.product.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
-@AllArgsConstructor
 public class CategoryService {
 
     private CategoryRepository categoryRepository;
 
+
+    //create category
     public CategoryDTO createCategory(CategoryDTO categoryDTO){
+
+        Optional<Category> optionalCategory = categoryRepository.findByName(categoryDTO.getName());
+        if(optionalCategory.isEmpty()){
+            throw new CategoryAlreadyExistsException("Category "
+                    + categoryDTO.getName() +" Already Exists");
+        }
         Category category = CategoryMapper.toCategoryEntity(categoryDTO);
         category = categoryRepository.save(category);
         return CategoryMapper.toCategoryDTO(category);

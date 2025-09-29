@@ -1,11 +1,13 @@
 package com.shivesh.product.controller;
 
 import com.shivesh.product.dto.CategoryDTO;
+import com.shivesh.product.exception.CategoryAlreadyExistsException;
 import com.shivesh.product.service.CategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +24,10 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO){
-        return new ResponseEntity<>(categoryService.createCategory(categoryDTO) , HttpStatus.CREATED);
+    public ResponseEntity<?> createCategory(@RequestBody CategoryDTO categoryDTO){
+           CategoryDTO savedCategory =  categoryService.createCategory(categoryDTO);
+           return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
+
     }
     //get category by id
     @GetMapping("/{id}")
